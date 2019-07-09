@@ -67,33 +67,47 @@ def parseData():
     
 ################################################################################
 ################################################################################
-def dataAugmentation():
+def data2loader():
     data = u_loadJson('lst/train.json')
     
-    hist    = []
-    names   = []
+    #hist    = []
+    #names   = []
 
-    for item in data:
-        hist.append(len(data[item]))
-        names.append(item)
+    ##...........................................................................
+    ## visualizing db data
+    #for item in data:
+    #    hist.append(len(data[item]))
+    #    names.append(item)
 
-    values  = hist
+    #values  = hist
+    #ind = np.arange(len(names)) 
+    #plt.bar(ind, values)
+    #plt.xticks(ind, names, rotation='vertical')
+    #plt.show()
 
-    ind = np.arange(len(names)) 
-    plt.bar(ind, values)
-    plt.xticks(ind, names, rotation='vertical')
-    plt.show()
+    #..........................................................................
+    # put db into loader
 
-################################################################################
-################################################################################
-################################################################################
+    transformations = transforms.Compose([
+    transforms.Resize(255),
+    transforms.CenterCrop(224),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ])
 
-class DatasetMNIST(Dataset):
+    db_train = DbFromDict(data, transform= transformations)
     
-    def __init__(self, file_path, transform=None):
-        self.data = pd.read_csv(file_path)
-        self.transform = transform
-        
+
+################################################################################
+################################################################################
+################################################################################
+
+class DbFromDict(Dataset):
+    
+    def __init__(self, info, transform=None):
+        self.data_path, self.data_labels  = formatInput(info)
+        self.transform  = transform        
+
     def __len__(self):
         return len(self.data)
     
@@ -102,21 +116,32 @@ class DatasetMNIST(Dataset):
         # be carefull for converting dtype to np.uint8 [Unsigned integer (0 to 255)]
         # in this example, i don't use ToTensor() method of torchvision.transforms
         # so you can convert numpy ndarray shape to tensor in PyTorch (H, W, C) --> (C, H, W)
-        image = self.data.iloc[index, 1:].values.astype(np.uint8).reshape((1, 28, 28))
-        label = self.data.iloc[index, 0]
         
+        image = Image.open(data_path[index])
+                
         if self.transform is not None:
             image = self.transform(image)
             
-        return image, label
-    
+        return image, data_labels[index]
+  
+    # utils ....................................................................
+    def formatInput(info):
+        data_path   = []
+        data_labels = []
+        
+        for lbl in info:
+            for item in info[lbl]: 
+                data_labels.append(lbl)
+                data_path.apappend(item)
 
-
+        return data_path, data_labels
+          
 ################################################################################
 ################################################################################
 if __name__ == '__main__':    
-    dataAugmentation()
-    
+    data2loader()
+   
+
 
 
     
