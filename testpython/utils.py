@@ -226,32 +226,3 @@ def u_fillVecToken(names, token = ' '):
 def u_joinPath(names):
     return u_fillVecToken(names, '/')
 
-################################################################################
-################################################################################
-def u_make_dataset_files (directory, token, split= (.5, .25, .25), shuffle= True):
-
-    files       = u_listFileAll_(directory, token)
-    n_clases    = len(files)
-    split       = np.array(split)
-
-    train = []
-    valid = [] 
-    test  = []
-
-    #...........................................................................
-    for dir, lfile in files:
-        if shuffle:
-            random.shuffle(lfile)
-
-        bounds  = ( split * len(lfile) ).astype(int)
-        
-        train.append( [ lfile[:bounds[0]], 
-                        os.path.basename(dir) ] )
-        valid.append( [ lfile[bounds[0]: bounds[0] + bounds[1]], 
-                        os.path.basename(dir) ] )
-        test.append( [ lfile[bounds[0] + bounds[1]:], 
-                       os.path.basename(dir) ] )
-
-    return train, valid, test
-
-

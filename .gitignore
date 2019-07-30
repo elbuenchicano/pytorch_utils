@@ -9168,3 +9168,5 @@
 /testpython/db/yin_yang/image_0060.jpg
 /testpython/optimizer.pth
 /testpython/model.pth
+/testpython/__pycache__/utilsd_db.cpython-35.pyc
+/testpython/vgg16-transfer-4.pt

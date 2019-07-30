@@ -27,6 +27,9 @@
     </Compile>
     <Compile Include="testpython.py" />
     <Compile Include="utils.py" />
+    <Compile Include="utilsd_db.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="CondaEnv|CondaEnv|pytorch" />
